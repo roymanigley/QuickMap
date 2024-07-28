@@ -197,5 +197,49 @@ class MapToPrimitiveTestCase(unittest.TestCase):
         self.assertEqual(value['b'], 'a')
 
 
+class MapWithMultipleArgumentsTestCase(unittest.TestCase):
+
+    def test_multiple_object_arguments(self):
+        # GIVEN
+        class Dummy:
+            name: str
+
+        dummy_1 = Dummy()
+        dummy_1.name = 'alpha'
+        dummy_2 = Dummy()
+        dummy_2.name = 'bravo'
+
+        @mapping(target='name_1', source='dummy_1.name')
+        @mapping(target='name_2', source='dummy_2.name')
+        def do_mapping(dummy_1: Dummy, dummy_2: Dummy) -> dict:
+            pass
+
+        # WHEN
+        dummy = do_mapping(dummy_1=dummy_1, dummy_2=dummy_2)
+        # THEN
+        self.assertEqual(dummy['name_1'], 'alpha')
+        self.assertEqual(dummy['name_2'], 'bravo')
+
+    def test_multiple_dict_arguments(self):
+        # GIVEN
+        class Dummy:
+            name_1: str
+            name_2: str
+
+        dummy_1 = {'name': 'alpha'}
+        dummy_2 = {'name': 'bravo'}
+
+        @mapping(target='name_1', source='dummy_1.name')
+        @mapping(target='name_2', source='dummy_2.name')
+        def do_mapping(dummy_1: dict, dummy_2: dict) -> Dummy:
+            pass
+
+        # WHEN
+        dummy = do_mapping(dummy_1=dummy_1, dummy_2=dummy_2)
+        # THEN
+        self.assertEqual(dummy.name_1, 'alpha')
+        self.assertEqual(dummy.name_2, 'bravo')
+
+
 if __name__ == '__main__':
     unittest.main()

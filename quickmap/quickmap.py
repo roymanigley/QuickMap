@@ -69,6 +69,26 @@ class MappingDescription:
 
 
 def mapping(*, source: str, target: str, function: callable = None):
+    """ map from `object` to `dict` or vice versa  
+    Example:
+    ```python
+    from quickmap import mapping
+
+    class Dummy:
+        name: str
+
+    # define the mapping
+    @mapping(target='name', source='dummy.name')
+    # define the source type using the type hint on the `do_mapping` function
+    # define the target type using the return type hint
+    def do_mapping(dummy: dict) -> Dummy:
+        pass
+
+    # call then mapping function
+    dummy = do_mapping({'name': 'alpha'})
+    print(dummy.name)
+    ```
+    """
 
     def wrapper(func: callable):
         return_type = func.__annotations__.get('return')

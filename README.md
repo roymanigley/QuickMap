@@ -1,4 +1,7 @@
 # QuickMap
+![Unit-Tests](https://github.com/roymanigley/QuickMap/actions/workflows/test.yml/badge.svg)  
+![Published Python Package](https://github.com/roymanigley/QuickMap/actions/workflows/publish.yml/badge.svg)
+
 > Quick and Simple Class-to-Dict Mapping for Python using decorators  
 
 Welcome to QuickMap, your go-to library for fast and straightforward mapping between Python classes and dictionaries. QuickMap is designed to make the process of serializing and deserializing data between classes and dictionaries as seamless and efficient as possible.  
@@ -33,13 +36,13 @@ class Dummy:
     name: str
 
 # define the mapping
-@mapping(target='name', source='name')
+@mapping(target='name', source='dummy.name')
 # define the source type using the type hint on the `do_mapping` function
 # define the target type using the return type hint
 def do_mapping(dummy: Dummy) -> dict:
     pass
 
-# call then mapping method
+# call then mapping function
 dummy = Dummy()
 dummy.name = 'alpha'
 dummy = do_mapping(dummy)
@@ -54,15 +57,36 @@ class Dummy:
     name: str
 
 # define the mapping
-@mapping(target='name', source='name')
+@mapping(target='name', source='dummy.name')
 # define the source type using the type hint on the `do_mapping` function
 # define the target type using the return type hint
 def do_mapping(dummy: dict) -> Dummy:
     pass
 
-# call then mapping method
+# call then mapping function
 dummy = do_mapping({'name': 'alpha'})
 print(dummy.name)
+```
+
+### map from multiple arguments
+```python
+from quickmap import mapping
+
+class Dummy:
+    name_1: str
+    name_2: str
+
+# define the mapping
+@mapping(target='name_1', source='dummy_1.name')
+@mapping(target='name_2', source='dummy_2.name')
+# define the source type using the type hint on the `do_mapping` function
+# define the target type using the return type hint
+def do_mapping(dummy_1: dict, dummy_2: dict) -> Dummy:
+    pass
+
+# call then mapping function
+dummy = do_mapping(dummy_1={'name': 'alpha'}, dummy_2={'name': 'bravo'})
+print(dummy.name_1, dummy.name_2)
 ```
 
 ### Example
